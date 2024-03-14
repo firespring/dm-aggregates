@@ -10,7 +10,7 @@ require 'dm-aggregates/repository'
 module DataMapper
   module Aggregates
     def self.include_aggregate_api
-      [ :Repository, :Model, :Collection, :Query ].each do |name|
+      %i(Repository Model Collection Query).each do |name|
         DataMapper.const_get(name).send(:include, const_get(name))
       end
       Adapters::AbstractAdapter.descendants.each do |adapter_class|
@@ -37,9 +37,9 @@ module DataMapper
     end
 
     class << self
-    private
+
       # @api private
-      def aggregate_extensions(const_name)
+      private def aggregate_extensions(const_name)
         name = adapter_name(const_name)
         name = 'do' if name == 'dataobjects'
         "dm-aggregates/adapters/dm-#{name}-adapter"
@@ -53,8 +53,8 @@ module DataMapper
         super
       end
     end
-  end # module Adapters
+  end
 
   Aggregates.include_aggregate_api
 
-end # module DataMapper
+end
