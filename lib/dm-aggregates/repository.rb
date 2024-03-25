@@ -2,10 +2,10 @@ module DataMapper
   module Aggregates
     module Repository
       def aggregate(query)
-        unless query.valid?
-          []
-        else
+        if query.valid?
           adapter.aggregate(query)
+        else
+          []
         end
       end
     end

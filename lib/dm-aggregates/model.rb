@@ -3,9 +3,7 @@ module DataMapper
     module Model
       include Functions
 
-      private
-
-      def property_by_name(property_name)
+      private def property_by_name(property_name)
         properties(repository.name)[property_name]
       end
     end

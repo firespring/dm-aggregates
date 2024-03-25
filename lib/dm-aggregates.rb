@@ -20,7 +20,6 @@ module DataMapper
   end
 
   module Adapters
-
     def self.include_aggregate_api(const_name)
       require aggregate_extensions(const_name)
       if Aggregates.const_defined?(const_name)
@@ -37,7 +36,6 @@ module DataMapper
     end
 
     class << self
-
       # @api private
       private def aggregate_extensions(const_name)
         name = adapter_name(const_name)
@@ -56,5 +54,4 @@ module DataMapper
   end
 
   Aggregates.include_aggregate_api
-
 end
