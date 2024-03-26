@@ -16,7 +16,11 @@ CURRENT_BRANCH = ENV.fetch('GIT_BRANCH', 'master')
 gem 'rake'
 gem 'rspec'
 
-gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+if SOURCE == :path
+  gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
+else
+  gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+end
 
 platforms :mri_18 do
   group :quality do
@@ -41,19 +45,29 @@ group :datamapper do
       gem "do_#{adapter}", DO_VERSION, do_options.dup
     end
 
-    gem 'dm-do-adapter', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    if SOURCE == :path
+      gem 'dm-do-adapter', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}"
+    else
+      gem 'dm-do-adapter', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    end
   end
 
   adapters.each do |adapter|
-    gem "dm-#{adapter}-adapter", DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    if SOURCE == :path
+      gem "dm-#{adapter}-adapter", DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}"
+    else
+      gem "dm-#{adapter}-adapter", DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    end
   end
 
   plugins = ENV['PLUGINS'] || ENV.fetch('PLUGIN', nil)
-  puts "PLUGINS: #{plugins}"
   plugins = plugins.to_s.tr(',', ' ').split.push('dm-migrations').uniq
-  puts "PLUGINS: #{plugins}"
 
   plugins.each do |plugin|
-    gem plugin, DM_VERSION, SOURCE => "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    if SOURCE == :path
+      gem plugin, DM_VERSION, SOURCE => "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}"
+    else
+      gem plugin, DM_VERSION, SOURCE => "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}", branch: CURRENT_BRANCH
+    end
   end
 end
