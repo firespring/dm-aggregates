@@ -1,7 +1,6 @@
 require File.expand_path('lib/dm-aggregates/version', __dir__)
 
 Gem::Specification.new do |gem|
-  gem.required_ruby_version = '>= 3.2'
   gem.authors       = ['Emmanuel Gomez']
   gem.email         = ['emmanuel.gomez@gmail.com']
   gem.summary       = 'DataMapper plugin providing support for aggregates on collections'
@@ -14,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.name          = 'dm-aggregates'
   gem.require_paths = ['lib']
   gem.version       = DataMapper::Aggregates::VERSION
+  gem.required_ruby_version = '>= 2.7.8'
 
   gem.add_runtime_dependency('dm-core', '~> 1.3.0.beta')
 end
