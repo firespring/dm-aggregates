@@ -4,7 +4,8 @@ Gem::Specification.new do |gem|
   gem.authors       = ['Emmanuel Gomez']
   gem.email         = ['emmanuel.gomez@gmail.com']
   gem.summary       = 'DataMapper plugin providing support for aggregates on collections'
-  gem.description   = gem.summary
+  gem.description   = 'DataMapper plugin providing support for aggregates, functions on collections and datasets.'
+  gem.license = 'Nonstandard'
   gem.homepage      = 'https://datamapper.org'
 
   gem.files         = `git ls-files`.split("\n")
