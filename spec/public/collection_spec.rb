@@ -9,9 +9,9 @@ describe DataMapper::Collection do
     it_should_behave_like 'An Aggregatable Class'
 
     describe 'ignore invalid query' do
-      let(:dragons) { Dragon.all.all(:id => []) }
+      let(:dragons) { Dragon.all.all(id: []) }
 
-      [ :size, :count ].each do |method|
+      %i(size count).each do |method|
         describe "##{method}" do
           subject { dragons.send(method) }
 
@@ -51,7 +51,7 @@ describe DataMapper::Collection do
     end
 
     context 'with collections created with Set operations' do
-      let(:collection) { dragons.all(:name => 'George') | dragons.all(:name => 'Puff') }
+      let(:collection) { dragons.all(name: 'George') | dragons.all(name: 'Puff') }
 
       describe '#size' do
         subject { collection.size }
@@ -90,14 +90,14 @@ describe DataMapper::Collection do
       end
 
       describe '#aggregate' do
-        subject { collection.aggregate(:all.count, :name.count, :toes_on_claw.min, :toes_on_claw.max, :toes_on_claw.avg, :toes_on_claw.sum)}
+        subject { collection.aggregate(:all.count, :name.count, :toes_on_claw.min, :toes_on_claw.max, :toes_on_claw.avg, :toes_on_claw.sum) }
 
-        it { should == [ 2, 2, 3, 4, 3.5, 7 ] }
+        it { should == [2, 2, 3, 4, 3.5, 7] }
       end
     end
 
     context 'with a collection limited to 1 result' do
-      let(:dragons) { Dragon.all(:limit => 1) }
+      let(:dragons) { Dragon.all(limit: 1) }
 
       describe '#size' do
         subject { dragons.size }
@@ -115,7 +115,7 @@ describe DataMapper::Collection do
     context 'with the order reversed by the grouping field' do
       subject { dragons.aggregate(:birth_at, :all.count) }
 
-      let(:dragons) { Dragon.all(:order => [ :birth_at.desc ]) }
+      let(:dragons) { Dragon.all(order: [:birth_at.desc]) }
 
       it 'displays the results in reverse order' do
         should == Dragon.aggregate(:birth_at, :all.count).reverse

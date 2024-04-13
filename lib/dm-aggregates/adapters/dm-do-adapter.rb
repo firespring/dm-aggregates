@@ -20,7 +20,7 @@ module DataMapper
           reader = command.execute_reader(*bind_values)
 
           begin
-            while(reader.next!)
+            while reader.next!
               row = fields.zip(reader.values).map do |field, value|
                 if field.respond_to?(:operator)
                   send(field.operator, field.target, value)
@@ -29,7 +29,7 @@ module DataMapper
                 end
               end
 
-              records << (field_size > 1 ? row : row[0])
+              records << ((field_size > 1) ? row : row[0])
             end
           ensure
             reader.close
@@ -39,62 +39,60 @@ module DataMapper
         records
       end
 
-      private
-
-      def count(property, value)
+      private def count(_property, value)
         value.to_i
       end
 
-      def min(property, value)
+      private def min(property, value)
         property.load(value)
       end
 
-      def max(property, value)
+      private def max(property, value)
         property.load(value)
       end
 
-      def avg(property, value)
+      private def avg(property, value)
         property.dump_class.equal?(::Integer) ? value.to_f : property.load(value)
       end
 
-      def sum(property, value)
+      private def sum(property, value)
         property.load(value)
       end
 
       chainable do
         def property_to_column_name(property, qualify)
           case property
-            when DataMapper::Query::Operator
-              aggregate_field_statement(property.operator, property.target, qualify)
+          when DataMapper::Query::Operator
+            aggregate_field_statement(property.operator, property.target, qualify)
 
-            when Property, DataMapper::Query::Path
-              super
+          when Property, DataMapper::Query::Path
+            super
 
-            else
-              raise ArgumentError, "+property+ must be a DataMapper::Query::Operator, a DataMapper::Property or a Query::Path, but was a #{property.class} (#{property.inspect})"
+          else
+            raise ArgumentError, '+property+ must be a DataMapper::Query::Operator, a DataMapper::Property or a Query::Path, but was a ' \
+                                 "#{property.class} (#{property.inspect})"
           end
         end
       end
 
-      def aggregate_field_statement(aggregate_function, property, qualify)
+      private def aggregate_field_statement(aggregate_function, property, qualify)
         column_name = if aggregate_function == :count && property == :all
-          '*'
-        else
-          property_to_column_name(property, qualify)
-        end
+                        '*'
+                      else
+                        property_to_column_name(property, qualify)
+                      end
 
         function_name = case aggregate_function
-          when :count then 'COUNT'
-          when :min   then 'MIN'
-          when :max   then 'MAX'
-          when :avg   then 'AVG'
-          when :sum   then 'SUM'
-          else raise "Invalid aggregate function: #{aggregate_function.inspect}"
-        end
+                        when :count then 'COUNT'
+                        when :min   then 'MIN'
+                        when :max   then 'MAX'
+                        when :avg   then 'AVG'
+                        when :sum   then 'SUM'
+                        else raise "Invalid aggregate function: #{aggregate_function.inspect}"
+                        end
 
         "#{function_name}(#{column_name})"
       end
-
-    end # class DataObjectsAdapter
-  end # module Aggregates
-end # module DataMapper
+    end
+  end
+end

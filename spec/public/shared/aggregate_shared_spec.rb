@@ -1,7 +1,7 @@
 shared_examples_for 'It Has Setup Resources' do
   before :all do
-    @mysql    = defined?(DataMapper::Adapters::MysqlAdapter)    && @adapter.kind_of?(DataMapper::Adapters::MysqlAdapter)
-    @postgres = defined?(DataMapper::Adapters::PostgresAdapter) && @adapter.kind_of?(DataMapper::Adapters::PostgresAdapter)
+    @mysql    = defined?(DataMapper::Adapters::MysqlAdapter)    && @adapter.is_a?(DataMapper::Adapters::MysqlAdapter)
+    @postgres = defined?(DataMapper::Adapters::PostgresAdapter) && @adapter.is_a?(DataMapper::Adapters::PostgresAdapter)
 
     @skip = (@mysql || @postgres) && ENV['TZ'].to_s.downcase != 'utc'
   end
@@ -13,68 +13,70 @@ shared_examples_for 'It Has Setup Resources' do
     @birth_on   = Date.parse(@birth_at.to_s)
     @birth_time = Time.parse(@birth_at.to_s)
 
-    @chuck = Knight.create(:name => 'Chuck')
-    @larry = Knight.create(:name => 'Larry')
+    @chuck = Knight.create(name: 'Chuck')
+    @larry = Knight.create(name: 'Larry')
 
-    Dragon.create(:name => 'George', :is_fire_breathing => false, :toes_on_claw => 3, :birth_at => @birth_at, :birth_on => @birth_on, :birth_time => @birth_time, :knight => @chuck)
-    Dragon.create(:name => 'Puff',   :is_fire_breathing => true,  :toes_on_claw => 4, :birth_at => @birth_at, :birth_on => @birth_on, :birth_time => @birth_time, :knight => @larry)
-    Dragon.create(:name => nil,      :is_fire_breathing => true,  :toes_on_claw => 5, :birth_at => nil,       :birth_on => nil,       :birth_time => nil)
+    Dragon.create(name: 'George',
+                  is_fire_breathing: false, toes_on_claw: 3, birth_at: @birth_at, birth_on: @birth_on, birth_time: @birth_time, knight: @chuck)
+    Dragon.create(name: 'Puff',
+                  is_fire_breathing: true,  toes_on_claw: 4, birth_at: @birth_at, birth_on: @birth_on, birth_time: @birth_time, knight: @larry)
+    Dragon.create(name: nil, is_fire_breathing: true, toes_on_claw: 5, birth_at: nil, birth_on: nil, birth_time: nil)
 
-    gold_kilo_price   = 277738.70
-    @gold_tonne_price = gold_kilo_price * 10000
+    gold_kilo_price   = 277_738.70
+    @gold_tonne_price = gold_kilo_price * 10_000
 
     Country.create(
-      :name                => 'China',
-      :population          => 1330044605,
-      :birth_rate          => 13.71,
-      :gold_reserve_tonnes => 600.0,
-      :gold_reserve_value  => 600.0 * @gold_tonne_price  # => 32150000
+      name: 'China',
+      population: 1_330_044_605,
+      birth_rate: 13.71,
+      gold_reserve_tonnes: 600.0,
+      gold_reserve_value: 600.0 * @gold_tonne_price # => 32150000
     )
 
     Country.create(
-      :name                => 'United States',
-      :population          => 303824646,
-      :birth_rate          => 14.18,
-      :gold_reserve_tonnes => 8133.5,
-      :gold_reserve_value  => 8133.5 * @gold_tonne_price
+      name: 'United States',
+      population: 303_824_646,
+      birth_rate: 14.18,
+      gold_reserve_tonnes: 8133.5,
+      gold_reserve_value: 8133.5 * @gold_tonne_price
     )
 
     Country.create(
-      :name                => 'Brazil',
-      :population          => 191908598,
-      :birth_rate          => 16.04,
-      :gold_reserve_tonnes => nil  # example of no stats available
+      name: 'Brazil',
+      population: 191_908_598,
+      birth_rate: 16.04,
+      gold_reserve_tonnes: nil  # example of no stats available
     )
 
     Country.create(
-      :name                => 'Russia',
-      :population          => 140702094,
-      :birth_rate          => 11.03,
-      :gold_reserve_tonnes => 438.2,
-      :gold_reserve_value  => 438.2 * @gold_tonne_price
+      name: 'Russia',
+      population: 140_702_094,
+      birth_rate: 11.03,
+      gold_reserve_tonnes: 438.2,
+      gold_reserve_value: 438.2 * @gold_tonne_price
     )
 
     Country.create(
-      :name                => 'Japan',
-      :population          => 127288419,
-      :birth_rate          => 7.87,
-      :gold_reserve_tonnes => 765.2,
-      :gold_reserve_value  => 765.2 * @gold_tonne_price
+      name: 'Japan',
+      population: 127_288_419,
+      birth_rate: 7.87,
+      gold_reserve_tonnes: 765.2,
+      gold_reserve_value: 765.2 * @gold_tonne_price
     )
 
     Country.create(
-      :name                => 'Mexico',
-      :population          => 109955400,
-      :birth_rate          => 20.04,
-      :gold_reserve_tonnes => nil  # example of no stats available
+      name: 'Mexico',
+      population: 109_955_400,
+      birth_rate: 20.04,
+      gold_reserve_tonnes: nil  # example of no stats available
     )
 
     Country.create(
-      :name                => 'Germany',
-      :population          => 82369548,
-      :birth_rate          => 8.18,
-      :gold_reserve_tonnes => 3417.4,
-      :gold_reserve_value  => 3417.4 * @gold_tonne_price
+      name: 'Germany',
+      population: 82_369_548,
+      birth_rate: 8.18,
+      gold_reserve_tonnes: 3417.4,
+      gold_reserve_value: 3417.4 * @gold_tonne_price
     )
 
     @approx_by = 0.0001
@@ -100,8 +102,8 @@ shared_examples_for 'An Aggregatable Class' do
 
       it 'counts the results with raw conditions' do
         statement = 'is_fire_breathing = ?'
-        dragons.count(:name, :conditions => [ statement, false ]).should == 1
-        dragons.count(:name, :conditions => [ statement, true  ]).should == 1
+        dragons.count(:name, conditions: [statement, false]).should == 1
+        dragons.count(:name, conditions: [statement, true]).should == 1
       end
     end
   end
@@ -116,7 +118,7 @@ shared_examples_for 'An Aggregatable Class' do
     context 'with a property name' do
       it 'provides the lowest value of an Integer property' do
         dragons.min(:toes_on_claw).should == 3
-        countries.min(:population).should == 82369548
+        countries.min(:population).should == 82_369_548
       end
 
       it 'provides the lowest value of a Float property' do
@@ -148,8 +150,8 @@ shared_examples_for 'An Aggregatable Class' do
       end
 
       it 'provides the lowest value when conditions provided' do
-        dragons.min(:toes_on_claw, :is_fire_breathing => true).should  == 4
-        dragons.min(:toes_on_claw, :is_fire_breathing => false).should == 3
+        dragons.min(:toes_on_claw, is_fire_breathing: true).should  == 4
+        dragons.min(:toes_on_claw, is_fire_breathing: false).should == 3
       end
     end
   end
@@ -164,7 +166,7 @@ shared_examples_for 'An Aggregatable Class' do
     context 'with a property name' do
       it 'provides the highest value of an Integer property' do
         dragons.max(:toes_on_claw).should == 5
-        countries.max(:population).should == 1330044605
+        countries.max(:population).should == 1_330_044_605
       end
 
       it 'provides the highest value of a Float property' do
@@ -195,8 +197,8 @@ shared_examples_for 'An Aggregatable Class' do
       end
 
       it 'provides the highest value when conditions provided' do
-        dragons.max(:toes_on_claw, :is_fire_breathing => true).should  == 5
-        dragons.max(:toes_on_claw, :is_fire_breathing => false).should == 3
+        dragons.max(:toes_on_claw, is_fire_breathing: true).should  == 5
+        dragons.max(:toes_on_claw, is_fire_breathing: false).should == 3
       end
     end
   end
@@ -228,8 +230,8 @@ shared_examples_for 'An Aggregatable Class' do
       end
 
       it 'provides the average value when conditions provided' do
-        dragons.avg(:toes_on_claw, :is_fire_breathing => true).should  == 4.5
-        dragons.avg(:toes_on_claw, :is_fire_breathing => false).should == 3
+        dragons.avg(:toes_on_claw, is_fire_breathing: true).should  == 4.5
+        dragons.avg(:toes_on_claw, is_fire_breathing: false).should == 3
       end
     end
   end
@@ -245,8 +247,8 @@ shared_examples_for 'An Aggregatable Class' do
       it 'provides the sum of values for an Integer property' do
         dragons.sum(:toes_on_claw).should == 12
 
-        total_population = 1330044605 + 303824646 + 191908598 + 140702094 +
-                           127288419 + 109955400 + 82369548
+        total_population = 1_330_044_605 + 303_824_646 + 191_908_598 + 140_702_094 +
+                           127_288_419 + 109_955_400 + 82_369_548
         countries.sum(:population).should == total_population
       end
 
@@ -262,8 +264,8 @@ shared_examples_for 'An Aggregatable Class' do
       end
 
       it 'provides the average value when conditions provided' do
-        dragons.sum(:toes_on_claw, :is_fire_breathing => true).should  == 9
-        dragons.sum(:toes_on_claw, :is_fire_breathing => false).should == 3
+        dragons.sum(:toes_on_claw, is_fire_breathing: true).should  == 9
+        dragons.sum(:toes_on_claw, is_fire_breathing: false).should == 3
       end
     end
   end
@@ -278,14 +280,15 @@ shared_examples_for 'An Aggregatable Class' do
     context 'with only aggregate fields specified' do
       it 'provides aggregate results' do
         results = dragons.aggregate(:all.count, :name.count, :toes_on_claw.min, :toes_on_claw.max, :toes_on_claw.avg, :toes_on_claw.sum)
-        results.should == [ 3, 2, 3, 5, 4.0, 12 ]
+        results.should == [3, 2, 3, 5, 4.0, 12]
       end
     end
 
     context 'with aggregate fields and a property to group by' do
       it 'provides aggregate results' do
-        results = dragons.aggregate(:all.count, :name.count, :toes_on_claw.min, :toes_on_claw.max, :toes_on_claw.avg, :toes_on_claw.sum, :is_fire_breathing)
-        results.should == [ [ 1, 1, 3, 3, 3.0, 3, false ], [ 2, 1, 4, 5, 4.5, 9, true ] ]
+        results = dragons.aggregate(:all.count, :name.count,
+                                    :toes_on_claw.min, :toes_on_claw.max, :toes_on_claw.avg, :toes_on_claw.sum, :is_fire_breathing)
+        results.should == [[1, 1, 3, 3, 3.0, 3, false], [2, 1, 4, 5, 4.5, 9, true]]
       end
     end
   end
@@ -309,14 +312,14 @@ shared_examples_for 'count with no arguments' do
     dragons.count(:toes_on_claw.gt => 3).should == 2
 
     countries.count(:birth_rate.lt => 12).should == 3
-    countries.count(:population.gt => 1000000000).should == 1
-    countries.count(:population.gt => 2000000000).should == 0
+    countries.count(:population.gt => 1_000_000_000).should == 1
+    countries.count(:population.gt => 2_000_000_000).should == 0
     countries.count(:population.lt => 10).should == 0
   end
 
   it 'counts the results with raw conditions' do
     dragon_statement = 'is_fire_breathing = ?'
-    dragons.count(:conditions => [ dragon_statement, false ]).should == 1
-    dragons.count(:conditions => [ dragon_statement, true  ]).should == 2
+    dragons.count(conditions: [dragon_statement, false]).should == 1
+    dragons.count(conditions: [dragon_statement, true]).should == 2
   end
 end

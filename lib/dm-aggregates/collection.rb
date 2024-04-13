@@ -3,9 +3,7 @@ module DataMapper
     module Collection
       include Functions
 
-      private
-
-      def property_by_name(property_name)
+      private def property_by_name(property_name)
         properties[property_name]
       end
     end

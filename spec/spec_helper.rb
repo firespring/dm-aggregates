@@ -12,12 +12,10 @@ require 'public/shared/aggregate_shared_spec'
 DataMapper::Spec.setup
 
 Spec::Runner.configure do |config|
-
   config.extend(DataMapper::Spec::Adapters::Helpers)
   config.include(DataMapper::Spec::PendingHelpers)
 
   config.before(:all) do
-
     # A simplistic example, using with an Integer property
     class ::Knight
       include DataMapper::Resource
@@ -37,7 +35,7 @@ Spec::Runner.configure do |config|
       property :birth_on,          Date
       property :birth_time,        Time
 
-      belongs_to :knight, :required => false
+      belongs_to :knight, required: false
     end
 
     # A more complex example, with BigDecimal and Float properties
@@ -47,13 +45,12 @@ Spec::Runner.configure do |config|
       include DataMapper::Resource
 
       property :id,                  Serial
-      property :name,                String,  :required => true
+      property :name,                String, required: true
       property :population,          Integer
-      property :birth_rate,          Float,   :precision => 4,  :scale => 2
-      property :gold_reserve_tonnes, Float,   :precision => 6,  :scale => 2
-      property :gold_reserve_value,  Decimal, :precision => 15, :scale => 1  # approx. value in USD
+      property :birth_rate,          Float,   precision: 4,  scale: 2
+      property :gold_reserve_tonnes, Float,   precision: 6,  scale: 2
+      property :gold_reserve_value,  Decimal, precision: 15, scale: 1 # approx. value in USD
     end
     DataMapper.finalize
-
   end
 end

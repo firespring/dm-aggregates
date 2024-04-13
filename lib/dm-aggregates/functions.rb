@@ -23,21 +23,20 @@ module DataMapper
       # @example the count of all your female friends with an address
       #   Friend.count(:address, :conditions => [ 'gender = ?', 'female' ])
       #
-      # @param property [Symbol] of the property you with to count (optional)
-      # @param  opts [Hash, Symbol] the conditions
+      # @param args [Mixed]
+      #   property [Symbol] of the property you with to count (optional)
+      #   opts [Hash, Symbol] the conditions
       #
       # @return [Integer] return the count given the conditions
       #
       # @api public
       def count(*args)
-        query         = args.last.kind_of?(Hash) ? args.pop : {}
+        query         = args.last.is_a?(Hash) ? args.pop : {}
         property_name = args.first
 
-        if property_name
-          assert_kind_of 'property', property_by_name(property_name), Property
-        end
+        assert_kind_of 'property', property_by_name(property_name), Property if property_name
 
-        aggregate(query.merge(:fields => [ property_name ? property_name.count : :all.count ])).to_i
+        aggregate(query&.merge(fields: [property_name ? property_name.count : :all.count])).to_i
       end
 
       # Get the lowest value of a property
@@ -48,19 +47,20 @@ module DataMapper
       # @example  the age of the youngest female friend
       #   Friend.min(:age, :conditions => [ 'gender = ?', 'female' ])
       #
-      # @param property [Symbol] the property you wish to get the lowest value of
-      # @param  opts [Hash, Symbol] the conditions
+      # @param args [Mixed]
+      #   property [Symbol] the property you wish to get the lowest value of
+      #   opts [Hash, Symbol] the conditions
       #
       # @return [Integer] return the lowest value of a property given the conditions
       #
       # @api public
       def min(*args)
-        query         = args.last.kind_of?(Hash) ? args.pop : {}
+        query         = args.last.is_a?(Hash) ? args.pop : {}
         property_name = args.first
 
         assert_property_type property_name, ::Integer, ::Float, ::BigDecimal, ::DateTime, ::Date, ::Time
 
-        aggregate(query.merge(:fields => [ property_name.min ]))
+        aggregate(query&.merge(fields: [property_name&.min]))
       end
 
       # Get the highest value of a property
@@ -71,19 +71,20 @@ module DataMapper
       # @example the age of the oldest female friend
       #   Friend.max(:age, :conditions => [ 'gender = ?', 'female' ])
       #
-      # @param property [Symbol] the property you wish to get the highest value of
-      # @param  opts [Hash, Symbol] the conditions
+      # @param args [Mixed]
+      #   property [Symbol] the property you wish to get the highest value of
+      #   opts [Hash, Symbol] the conditions
       #
       # @return [Integer] return the highest value of a property given the conditions
       #
       # @api public
       def max(*args)
-        query         = args.last.kind_of?(Hash) ? args.pop : {}
+        query         = args.last.is_a?(Hash) ? args.pop : {}
         property_name = args.first
 
         assert_property_type property_name, ::Integer, ::Float, ::BigDecimal, ::DateTime, ::Date, ::Time
 
-        aggregate(query.merge(:fields => [ property_name.max ]))
+        aggregate(query&.merge(fields: [property_name&.max]))
       end
 
       # Get the average value of a property
@@ -94,19 +95,20 @@ module DataMapper
       # @example the average age of all female friends
       #   Friend.avg(:age, :conditions => [ 'gender = ?', 'female' ])
       #
-      # @param property [Symbol] the property you wish to get the average value of
-      # @param  opts [Hash, Symbol] the conditions
+      # @param args [Mixed]
+      #   property [Symbol] the property you wish to get the average value of
+      #   opts [Hash, Symbol] the conditions
       #
       # @return [Integer] return the average value of a property given the conditions
       #
       # @api public
       def avg(*args)
-        query         = args.last.kind_of?(Hash) ? args.pop : {}
+        query         = args.last.is_a?(Hash) ? args.pop : {}
         property_name = args.first
 
         assert_property_type property_name, ::Integer, ::Float, ::BigDecimal
 
-        aggregate(query.merge(:fields => [ property_name.avg ]))
+        aggregate(query&.merge(fields: [property_name&.avg]))
       end
 
       # Get the total value of a property
@@ -117,19 +119,20 @@ module DataMapper
       # @example the total age of all female friends
       #   Friend.max(:age, :conditions => [ 'gender = ?', 'female' ])
       #
-      # @param property [Symbol] the property you wish to get the total value of
-      # @param  opts [Hash, Symbol] the conditions
+      # @param args [Mixed]
+      #   property [Symbol] the property you wish to get the total value of
+      #   opts [Hash, Symbol] the conditions
       #
       # @return [Integer] return the total value of a property given the conditions
       #
       # @api public
       def sum(*args)
-        query         = args.last.kind_of?(::Hash) ? args.pop : {}
+        query         = args.last.is_a?(::Hash) ? args.pop : {}
         property_name = args.first
 
         assert_property_type property_name, ::Integer, ::Float, ::BigDecimal
 
-        aggregate(query.merge(:fields => [ property_name.sum ]))
+        aggregate(query.merge(fields: [property_name.sum]))
       end
 
       # Perform aggregate queries
@@ -143,15 +146,16 @@ module DataMapper
       # @example the average age, grouped by gender
       #   Friend.aggregate(:age.avg, :fields => [ :gender ])
       #
-      # @param aggregates [Symbol, ...] operators to aggregate with
-      # @param query [Hash] the conditions
+      # @param args [Mixed]
+      #   aggregates [Symbol, ...] operators to aggregate with
+      #   query [Hash] the conditions
       #
       # @return [Array,Numeric,DateTime,Date,Time] the results of the
       #   aggregate query
       #
       # @api public
       def aggregate(*args)
-        query = args.last.kind_of?(Hash) ? args.pop : {}
+        query = args.last.is_a?(Hash) ? args.pop : {}
 
         query[:fields] ||= []
         query[:fields]  |= args
@@ -159,7 +163,7 @@ module DataMapper
 
         raise ArgumentError, 'query[:fields] must not be empty' if query[:fields].empty?
 
-        unless query.key?(:order)
+        unless query&.key?(:order)
           # the current collection/model is already sorted by attributes
           # and since we are projecting away some of the attributes,
           # and then performing aggregate functions on the remainder,
@@ -172,57 +176,52 @@ module DataMapper
 
           # use the current query order for each property if available
           query[:fields].each do |property|
-            next unless property.kind_of?(Property)
+            next unless property.is_a?(Property)
+
             query[:order] << directions.fetch(property, property)
           end
         end
 
         query = scoped_query(query)
 
-        if query.fields.any? { |p| p.kind_of?(Property) }
-          query.repository.aggregate(query.update(:unique => true))
+        if query.fields.any? { |p| p.is_a?(Property) }
+          query.repository.aggregate(query.update(unique: true))
         else
-          query.repository.aggregate(query).first  # only return one row
+          query.repository.aggregate(query).first # only return one row
         end
       end
 
-      private
-
-      def assert_property_type(name, *types)
-        if name.nil?
-          raise ArgumentError, 'property name must not be nil'
-        end
+      private def assert_property_type(name, *types)
+        raise ArgumentError, 'property name must not be nil' if name.nil?
 
         property = property_by_name(name)
         type     = property.dump_class
 
-        unless types.include?(type)
-          raise ArgumentError, "#{name} must be #{types * ' or '}, but was #{type}"
-        end
+        raise ArgumentError, "#{name} must be #{types * ' or '}, but was #{type}" unless types.include?(type)
       end
 
-      def normalize_field(field)
+      private def normalize_field(field)
         assert_kind_of 'field', field, DataMapper::Query::Operator, Symbol, Property
 
         case field
-          when DataMapper::Query::Operator
-            if field.target == :all
-              field
-            else
-              field.class.new(property_by_name(field.target), field.operator)
-            end
-
-          when Symbol
-            property_by_name(field)
-
-          when Property
+        when DataMapper::Query::Operator
+          if field.target == :all
             field
+          else
+            field.class.new(property_by_name(field.target), field.operator)
+          end
+
+        when Symbol
+          property_by_name(field)
+
+        when Property
+          field
         end
       end
 
-      def direction_map
+      private def direction_map
         direction_map = {}
-        self.query.order.each do |direction|
+        query.order.each do |direction|
           direction_map[direction.target] = direction
         end
         direction_map

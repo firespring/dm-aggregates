@@ -10,7 +10,7 @@ module DataMapper
       end
 
       def assert_valid_fields_with_operator(fields, unique)
-        operators, fields = fields.partition { |f| f.kind_of?(DataMapper::Query::Operator) }
+        operators, fields = fields.partition { |f| f.is_a?(DataMapper::Query::Operator) }
 
         operators.each do |operator|
           target = operator.target
