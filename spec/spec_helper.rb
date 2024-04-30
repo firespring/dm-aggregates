@@ -11,7 +11,7 @@ require 'public/shared/aggregate_shared_spec'
 
 DataMapper::Spec.setup
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.extend(DataMapper::Spec::Adapters::Helpers)
   config.include(DataMapper::Spec::PendingHelpers)
 

@@ -1,4 +1,4 @@
-shared_examples_for 'It Has Setup Resources' do
+shared_examples 'It Has Setup Resources' do
   before :all do
     @mysql    = defined?(DataMapper::Adapters::MysqlAdapter)    && @adapter.is_a?(DataMapper::Adapters::MysqlAdapter)
     @postgres = defined?(DataMapper::Adapters::PostgresAdapter) && @adapter.is_a?(DataMapper::Adapters::PostgresAdapter)
@@ -83,7 +83,7 @@ shared_examples_for 'It Has Setup Resources' do
   end
 end
 
-shared_examples_for 'An Aggregatable Class' do
+shared_examples 'An Aggregatable Class' do
   describe '#size' do
     it_should_behave_like 'count with no arguments'
   end
@@ -301,7 +301,7 @@ shared_examples_for 'An Aggregatable Class' do
   end
 end
 
-shared_examples_for 'count with no arguments' do
+shared_examples 'count with no arguments' do
   it 'counts the results' do
     dragons.count.should  == 3
 

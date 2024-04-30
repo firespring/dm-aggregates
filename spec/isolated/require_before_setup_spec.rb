@@ -1,5 +1,5 @@
 require 'backports'
-require 'spec'
+require 'rspec'
 
 require 'isolated/require_spec'
 require 'dm-core/spec/setup'
