@@ -1,7 +1,6 @@
-require 'backports'
 require 'rspec'
 
-require 'isolated/require_spec'
+require_relative 'require_spec'
 require 'dm-core/spec/setup'
 
 # To really test this behavior, this spec needs to be run in isolation and not

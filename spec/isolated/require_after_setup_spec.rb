@@ -1,4 +1,3 @@
-require 'backports'
 require 'rspec'
 
 require 'isolated/require_spec'
