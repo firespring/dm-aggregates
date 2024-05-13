@@ -13,6 +13,6 @@ if %w(postgres mysql sqlite oracle sqlserver).include?(ENV['ADAPTER'])
       @adapter = DataMapper::Spec.adapter
     end
 
-    it_should_behave_like "require 'dm-aggregates'"
+    it_behaves_like "require 'dm-aggregates'"
   end
 end
