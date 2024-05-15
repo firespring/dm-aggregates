@@ -108,7 +108,10 @@ describe DataMapper::Collection do
       describe '#count' do
         subject { dragons.count }
 
-        it { pending('TODO: make count apply to the limited collection. Currently limit applies after the count') { is_expected.to eq 1 } }
+        it {
+          pending 'TODO: make count apply to the limited collection. Currently limit applies after the count'
+          is_expected.to eq 1
+        }
       end
     end
 
