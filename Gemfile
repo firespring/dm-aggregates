@@ -16,11 +16,10 @@ CURRENT_BRANCH = ENV.fetch('GIT_BRANCH', 'master')
 gem 'rake'
 gem 'rspec'
 
-if SOURCE == :path
-  gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
-else
-  gem 'dm-core', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}", branch: CURRENT_BRANCH
-end
+options = {}
+options[SOURCE] = "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
+options[:branch] = CURRENT_BRANCH unless SOURCE == :path
+gem 'dm-core', DM_VERSION, options.dup
 
 platforms :mri_18 do
   group :quality do
@@ -36,38 +35,32 @@ group :datamapper do
 
   if (do_adapters = DM_DO_ADAPTERS & adapters).any?
     do_options = {}
-    do_options[:git] = "#{DATAMAPPER}/datamapper-do#{REPO_POSTFIX}" if ENV['DO_GIT'] == 'true'
-
+    if ENV['DO_GIT'] == 'true'
+      do_options = options.dup
+      do_options[SOURCE] = "#{DATAMAPPER}/datamapper-do#{REPO_POSTFIX}"
+    end
     gem 'data_objects', DO_VERSION, do_options.dup
 
     do_adapters.each do |adapter|
       adapter = 'sqlite3' if adapter == 'sqlite'
+
       gem "do_#{adapter}", DO_VERSION, do_options.dup
     end
 
-    if SOURCE == :path
-      gem 'dm-do-adapter', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}"
-    else
-      gem 'dm-do-adapter', DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
-    end
+    options[SOURCE] = "#{DATAMAPPER}/dm-do-adapter#{REPO_POSTFIX}"
+    gem 'dm-do-adapter', DM_VERSION, options.dup
   end
 
   adapters.each do |adapter|
-    if SOURCE == :path
-      gem "dm-#{adapter}-adapter", DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}"
-    else
-      gem "dm-#{adapter}-adapter", DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}", branch: CURRENT_BRANCH
-    end
+    options[SOURCE] = "#{DATAMAPPER}/dm-#{adapter}-adapter#{REPO_POSTFIX}"
+    gem "dm-#{adapter}-adapter", DM_VERSION, options.dup
   end
 
   plugins = ENV['PLUGINS'] || ENV.fetch('PLUGIN', nil)
   plugins = plugins.to_s.tr(',', ' ').split.push('dm-migrations').uniq
 
   plugins.each do |plugin|
-    if SOURCE == :path
-      gem plugin, DM_VERSION, SOURCE => "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}"
-    else
-      gem plugin, DM_VERSION, SOURCE => "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}", branch: CURRENT_BRANCH
-    end
+    options[SOURCE] = "#{DATAMAPPER}/#{plugin}#{REPO_POSTFIX}"
+    gem plugin, DM_VERSION, options.dup
   end
 end
