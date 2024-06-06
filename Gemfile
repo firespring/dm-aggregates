@@ -15,6 +15,7 @@ CURRENT_BRANCH = ENV.fetch('GIT_BRANCH', 'master')
 # development dependencies
 gem 'rake'
 gem 'rspec'
+gem 'simplecov'
 
 options = {}
 options[SOURCE] = "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
@@ -23,7 +24,6 @@ gem 'dm-core', DM_VERSION, options.dup
 
 platforms :mri_18 do
   group :quality do
-    gem 'rcov'
     gem 'yard'
     gem 'yardstick'
   end
