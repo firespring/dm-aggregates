@@ -13,6 +13,8 @@ DM_DO_ADAPTERS = %w(sqlite postgres mysql oracle sqlserver).freeze
 CURRENT_BRANCH = ENV.fetch('GIT_BRANCH', 'master')
 
 # development dependencies
+gem 'pry'
+gem 'pry-byebug'
 gem 'rake'
 gem 'rspec'
 gem 'simplecov'
