@@ -1,8 +1,8 @@
 require File.expand_path('lib/dm-aggregates/version', __dir__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ['Emmanuel Gomez']
-  gem.email         = ['emmanuel.gomez@gmail.com']
+  gem.authors       = ['opensource_firespring']
+  gem.email         = ['opensource@firespring.com']
   gem.summary       = 'DataMapper plugin providing support for aggregates on collections'
   gem.description   = 'DataMapper plugin providing support for aggregates, functions on collections and datasets.'
   gem.license = 'Nonstandard'
