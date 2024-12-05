@@ -60,13 +60,13 @@ module DataMapper
       end
 
       chainable do
-        def property_to_column_name(property, qualify)
+        def chainable_property_to_column_name(property, qualify)
           case property
           when DataMapper::Query::Operator
             aggregate_field_statement(property.operator, property.target, qualify)
 
           when Property, DataMapper::Query::Path
-            super
+            property_to_column_name(property, qualify)
 
           else
             raise ArgumentError, '+property+ must be a DataMapper::Query::Operator, a DataMapper::Property or a Query::Path, but was a ' \
