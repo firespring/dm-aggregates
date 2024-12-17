@@ -59,18 +59,22 @@ module DataMapper
         property.load(value)
       end
 
-      chainable do
-        def chainable_property_to_column_name(property, qualify)
+      def self.included(base)
+        base.prepend(PropertyToColumnName)
+      end
+
+      module PropertyToColumnName
+        def property_to_column_name(property, qualify)
           case property
           when DataMapper::Query::Operator
             aggregate_field_statement(property.operator, property.target, qualify)
 
           when Property, DataMapper::Query::Path
-            property_to_column_name(property, qualify)
+            super
 
           else
             raise ArgumentError, '+property+ must be a DataMapper::Query::Operator, a DataMapper::Property or a Query::Path, but was a ' \
-                                 "#{property.class} (#{property.inspect})"
+              "#{property.class} (#{property.inspect})"
           end
         end
       end
