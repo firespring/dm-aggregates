@@ -59,11 +59,7 @@ module DataMapper
         property.load(value)
       end
 
-      def self.included(base)
-        base.prepend(PropertyToColumnName)
-      end
-
-      module PropertyToColumnName
+      chainable do
         def property_to_column_name(property, qualify)
           case property
           when DataMapper::Query::Operator
